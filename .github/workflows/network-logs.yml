@@ -1,0 +1,47 @@
+name: Network Diagnostics
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  network-check:
+    runs-on: ubuntu-latest  # GitHub-hosted runner
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Log Hostname and IP
+      run: |
+        echo "=== HOSTNAME AND IP ==="
+        hostname
+        hostname -I
+        ip addr
+
+    - name: Log Network Interfaces
+      run: |
+        echo "=== NETWORK INTERFACES ==="
+        ifconfig || ip a
+
+    - name: Log DNS Configuration
+      run: |
+        echo "=== DNS CONFIGURATION ==="
+        cat /etc/resolv.conf
+
+    - name: Log Routing Table
+      run: |
+        echo "=== ROUTING TABLE ==="
+        netstat -rn || ip route
+
+    - name: Ping External Server
+      run: |
+        echo "=== PING TEST ==="
+        ping -c 4 google.com || echo "Ping failed"
+
+    - name: Log Environment Variables (Optional)
+      run: |
+        echo "=== ENVIRONMENT VARIABLES ==="
+        printenv
